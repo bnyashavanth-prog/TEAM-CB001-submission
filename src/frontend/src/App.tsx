@@ -15,6 +15,7 @@ const App: React.FC = () => {
   const location = useLocation();
   const mccView = location.pathname.startsWith('/mcc') || location.pathname.startsWith('/complaints') || location.pathname.startsWith('/verification');
   const portalView = location.pathname === '/public' || location.pathname === '/worker';
+  const landingView = location.pathname === '/';
   return (
     <div className="min-h-screen flex flex-col">
       {mccView && <nav className="bg-slate-900 text-white p-4 flex justify-between items-center">
@@ -26,7 +27,7 @@ const App: React.FC = () => {
           <Link to="/complaints" className="hover:text-blue-300">Complaints</Link>
         </div>
       </nav>}
-      <main className="flex-1 p-6">
+      <main className={`flex-1 ${landingView ? '' : 'p-6'}`}>
         {portalView && <div className="max-w-6xl mx-auto mb-6"><NotificationPanel /></div>}
         <Routes>
           <Route path="/" element={<Landing />} />

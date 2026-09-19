@@ -20,3 +20,22 @@ body {
   background-color: var(--background);
   color: var(--text);
 }
+
+.landing-shell { min-height: 100vh; position: relative; isolation: isolate; }
+.landing-grid { position: absolute; inset: 0; z-index: -2; opacity: .25; background-image: linear-gradient(rgba(79, 141, 255, .14) 1px, transparent 1px), linear-gradient(90deg, rgba(79, 141, 255, .14) 1px, transparent 1px); background-size: 56px 56px; mask-image: linear-gradient(to bottom, black, transparent 85%); }
+.landing-glow { position: absolute; z-index: -1; border-radius: 999px; filter: blur(60px); pointer-events: none; }
+.landing-glow-one { width: 38rem; height: 28rem; top: 6rem; right: -10rem; background: rgba(0, 117, 255, .22); animation: landing-drift 15s ease-in-out infinite alternate; }
+.landing-glow-two { width: 28rem; height: 20rem; top: 22rem; left: -16rem; background: rgba(0, 229, 255, .1); animation: landing-drift 18s ease-in-out infinite alternate-reverse; }
+.landing-enter { animation: landing-enter .75s cubic-bezier(.2,.8,.2,1) both; }
+.landing-visual { animation: landing-enter .9s .1s cubic-bezier(.2,.8,.2,1) both; }
+.landing-orbit { position: absolute; width: 110%; height: 74%; left: -5%; top: 10%; border: 1px solid rgba(0,229,255,.36); border-radius: 50%; transform: rotate(-16deg); box-shadow: 0 0 25px rgba(0,229,255,.1); animation: landing-orbit 18s linear infinite; }
+.landing-city-card { transform: perspective(900px) rotateY(-4deg) rotateX(2deg); }
+.landing-float-card { animation: landing-float 5s ease-in-out infinite; }
+.landing-float-card:last-child { animation-delay: -2.5s; }
+.landing-feature { transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease, background-color .25s ease; }
+.landing-feature:hover { transform: translateY(-5px); border-color: rgba(0,229,255,.55); background-color: rgba(20,45,85,.72); box-shadow: 0 18px 45px rgba(0,100,255,.14); }
+@keyframes landing-enter { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes landing-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes landing-drift { from { transform: translate3d(0,0,0) scale(1); } to { transform: translate3d(-18px,16px,0) scale(1.08); } }
+@keyframes landing-orbit { to { transform: rotate(344deg); } }
+@media (prefers-reduced-motion: reduce) { .landing-enter, .landing-visual, .landing-float-card, .landing-glow-one, .landing-glow-two, .landing-orbit { animation: none; } .landing-feature { transition: none; } }
