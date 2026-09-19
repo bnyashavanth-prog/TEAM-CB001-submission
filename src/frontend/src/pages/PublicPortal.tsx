@@ -2,55 +2,104 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { complaintApi } from '../services/api';
 import { Complaint } from '../types/complaint';
-import PublicLocationPicker from '../components/PublicLocationPicker';
+import { CheckCircle2, ChevronRight, FileText, Image as ImageIcon, MapPin, Search } from 'lucide-react';
 
 const PublicPortal: React.FC = () => {
-  const [items, setItems] = useState<Complaint[]>([]); const [file, setFile] = useState<File | null>(null); const [busy, setBusy] = useState(false);
-  const [locationStatus, setLocationStatus] = useState('Click the map to choose the exact complaint location, or use your device location.');
-  const [form, setForm] = useState({ issue_type: 'garbage_accumulation', description: '', address: '', latitude: 12.3051, longitude: 76.6551 });
+  const [items, setItems] = useState<Complaint[]>([]);
   const navigate = useNavigate();
-  const load = async () => { try { setItems(await complaintApi.mine()); } catch { navigate('/access/public'); } };
+  
+  const load = async () => { 
+    try { setItems(await complaintApi.mine()); } 
+    catch { navigate('/access/public'); } 
+  };
+  
   useEffect(() => { void load(); }, []);
-  const useDeviceLocation = () => {
-    if (!navigator.geolocation) return setLocationStatus('This browser does not provide device location. Select the point on the map instead.');
-    const requestLocation = (highAccuracy: boolean, retried = false) => {
-      setLocationStatus(retried ? 'Trying your approximate device location…' : 'Requesting your device location…');
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          const latitude = +position.coords.latitude.toFixed(6); const longitude = +position.coords.longitude.toFixed(6);
-          setForm(current => ({ ...current, latitude, longitude }));
-          setLocationStatus('Device location selected on the map. Finding the address automatically…');
-          void findAddressAt(latitude, longitude);
-        },
-        error => {
-          if (!retried && error.code !== error.PERMISSION_DENIED) return requestLocation(false, true);
-          const guidance = error.code === error.PERMISSION_DENIED
-            ? 'Location permission is blocked. Use the site-controls icon beside the address bar, set Location to Allow, then click again.'
-            : 'Your device could not provide a location. Turn on GPS or Wi-Fi, then try again, or choose the point directly on the map.';
-          setLocationStatus(guidance);
-        },
-        { enableHighAccuracy: highAccuracy, timeout: 20000, maximumAge: 0 }
-      );
-    };
-    requestLocation(true);
-  };
-  const findAddress = async () => {
-    await findAddressAt(form.latitude, form.longitude);
-  };
-  const findAddressAt = async (latitude: number, longitude: number) => {
-    setLocationStatus('Finding the address from the selected coordinates…');
-    try {
-      const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`);
-      const result = await response.json();
-      if (!response.ok || !result.display_name) throw new Error();
-      setForm(current => ({...current, latitude, longitude, address: result.display_name}));
-      setLocationStatus('Address filled from the selected map location. Please confirm it is correct before submitting.');
-    } catch {
-      setLocationStatus('We could not find an address for these coordinates. Enter the address manually.');
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'VERIFIED_RESOLVED': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+      case 'PARTIALLY_RESOLVED': return 'bg-blue-100 text-blue-700 border-blue-200';
+      case 'NOT_RESOLVED': return 'bg-red-100 text-red-700 border-red-200';
+      case 'IN_PROGRESS': return 'bg-amber-100 text-amber-700 border-amber-200';
+      default: return 'bg-zinc-100 text-zinc-700 border-zinc-200';
     }
   };
-  const selectOnMap = (latitude: number, longitude: number) => { setForm(current => ({...current, latitude, longitude})); void findAddressAt(latitude, longitude); };
-  const submit = async (e: React.FormEvent) => { e.preventDefault(); if (!file) return alert('Please add a Before photo'); setBusy(true); try { const complaint = await complaintApi.create(form as any); await complaintApi.uploadEvidence(complaint.id, file, { type:'BEFORE', timestamp:new Date().toISOString(), latitude:form.latitude, longitude:form.longitude }); await load(); setFile(null); } catch (error:any) { alert(error.response?.data?.detail || 'Could not file complaint'); } finally { setBusy(false); } };
-  return <div className="max-w-6xl mx-auto p-6 space-y-8"><header className="flex justify-between"><div><p className="text-blue-600 font-bold text-sm">PUBLIC PORTAL</p><h1 className="text-3xl font-bold">Your civic complaints</h1></div><button onClick={() => { localStorage.clear(); navigate('/'); }} className="text-sm text-slate-600">Logout</button></header><div className="grid lg:grid-cols-5 gap-6"><form onSubmit={submit} className="lg:col-span-2 bg-white border rounded-xl p-6 space-y-3"><h2 className="font-bold text-lg">File a complaint</h2><select className="w-full border p-3 rounded" value={form.issue_type} onChange={e => setForm({...form, issue_type:e.target.value})}><option value="garbage_accumulation">Garbage accumulation</option><option value="overflowing_bin">Overflowing bin</option><option value="construction_debris">Construction debris</option><option value="pothole">Pothole</option></select><input required placeholder="Address" className="w-full border p-3 rounded" value={form.address} onChange={e => setForm({...form,address:e.target.value})}/><div className="border rounded p-3 bg-slate-50"><div className="flex flex-wrap justify-between gap-3"><span className="text-sm font-medium">Complaint location</span><div className="flex gap-3"><button type="button" onClick={findAddress} className="text-blue-600 text-sm font-bold">Find address from location</button><button type="button" onClick={useDeviceLocation} className="text-blue-600 text-sm font-bold">Use my device location</button></div></div><p className="text-xs text-slate-500 mt-1">{locationStatus}</p><p className="text-xs text-slate-400 mt-1">Click the Mysuru map to place the marker exactly; the address fills automatically using OpenStreetMap.</p><PublicLocationPicker latitude={form.latitude} longitude={form.longitude} onSelect={selectOnMap}/><div className="grid grid-cols-2 gap-2 mt-3"><input type="number" step="any" aria-label="Latitude" className="border rounded p-2" value={form.latitude} onChange={e => setForm({...form,latitude:+e.target.value})}/><input type="number" step="any" aria-label="Longitude" className="border rounded p-2" value={form.longitude} onChange={e => setForm({...form,longitude:+e.target.value})}/></div></div><textarea placeholder="Describe the issue" className="w-full border p-3 rounded" value={form.description} onChange={e => setForm({...form,description:e.target.value})}/><label className="text-sm font-medium">Before photo <input required type="file" accept="image/*" className="block mt-1" onChange={e => setFile(e.target.files?.[0] || null)}/></label><p className="text-xs text-slate-500">Images are used for MCC review and Gemini AI verification after a worker adds the After photo.</p><button disabled={busy} className="w-full bg-blue-600 text-white p-3 rounded font-bold">{busy ? 'Submitting…' : 'Submit complaint'}</button></form><section className="lg:col-span-3 space-y-3"><h2 className="font-bold text-lg">My reports</h2>{items.map(item => <Link key={item.id} to={`/public/complaints/${item.id}`} className="block bg-white border rounded-xl p-4 hover:border-blue-400"><div className="flex justify-between"><b>{item.complaint_number}</b><span className="text-xs font-bold text-blue-700">{item.status.replace(/_/g,' ')}</span></div><p className="mt-1 capitalize">{item.issue_type.replace('_',' ')} · {item.address}</p><p className="text-sm text-slate-500 mt-1">View evidence and AI result.</p></Link>)}{!items.length && <p className="text-slate-500">No complaints yet.</p>}</section></div></div>;
+
+  return (
+    <div className="max-w-5xl mx-auto animate-in fade-in duration-500">
+      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-10 pb-6 border-b border-zinc-200">
+        <div>
+          <p className="text-[10px] font-bold tracking-widest text-zinc-400 mb-2">CIVIC PORTAL</p>
+          <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">Your Reports</h1>
+          <p className="text-zinc-500 mt-1">Track the resolution status of civic issues you've reported.</p>
+        </div>
+        <div className="flex gap-3">
+          <Link to="/complaints/new" className="btn-premium btn-primary px-5 py-2">
+            Report New Issue
+          </Link>
+          <button onClick={() => { localStorage.removeItem('mcc_token'); localStorage.removeItem('mcc_user'); navigate('/'); }} className="text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors px-2">
+            Logout
+          </button>
+        </div>
+      </header>
+
+      {items.length === 0 ? (
+        <div className="card-premium p-12 flex flex-col items-center justify-center text-center">
+          <div className="w-16 h-16 bg-zinc-50 border border-zinc-200 rounded-full flex items-center justify-center mb-6">
+            <FileText className="w-6 h-6 text-zinc-400" />
+          </div>
+          <h2 className="text-xl font-semibold text-zinc-900 mb-2">No reports yet</h2>
+          <p className="text-zinc-500 max-w-sm mx-auto mb-8 leading-relaxed">
+            Help keep Mysuru clean and safe. Report an issue with photo evidence, and we'll route it to the right department.
+          </p>
+          <Link to="/complaints/new" className="btn-premium btn-secondary px-6 py-2.5">
+            Create First Report
+          </Link>
+        </div>
+      ) : (
+        <div className="grid gap-4">
+          {items.map(item => (
+            <Link 
+              key={item.id} 
+              to={`/public/complaints/${item.id}`} 
+              className="card-premium p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-6 group"
+            >
+              <div className="flex-1 space-y-3">
+                <div className="flex items-center gap-3">
+                  <span className="font-semibold text-zinc-900 group-hover:text-zinc-600 transition-colors">
+                    {item.complaint_number}
+                  </span>
+                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${getStatusColor(item.status)}`}>
+                    {item.status.replace(/_/g, ' ')}
+                  </span>
+                </div>
+                
+                <div>
+                  <p className="text-sm font-medium text-zinc-700 capitalize">
+                    {item.issue_type.replace(/_/g, ' ')}
+                  </p>
+                  <p className="text-sm text-zinc-500 flex items-center gap-1 mt-1 truncate max-w-lg">
+                    <MapPin className="w-3.5 h-3.5 shrink-0" />
+                    {item.address || 'Location provided via coordinates'}
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-4 text-sm text-zinc-400 shrink-0 border-t sm:border-t-0 sm:border-l border-zinc-100 pt-4 sm:pt-0 sm:pl-6">
+                <div className="flex flex-col sm:text-right">
+                  <span className="text-xs uppercase tracking-wider font-semibold">Reported</span>
+                  <span className="font-medium text-zinc-600 mt-0.5">{new Date(item.created_at).toLocaleDateString()}</span>
+                </div>
+                <div className="w-8 h-8 rounded-full bg-zinc-50 border border-zinc-200 flex items-center justify-center group-hover:bg-zinc-100 group-hover:border-zinc-300 transition-colors">
+                  <ChevronRight className="w-4 h-4 text-zinc-500" />
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 };
+
 export default PublicPortal;
