@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException, BackgroundTasks, Response
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
@@ -11,7 +11,7 @@ from app.storage.file_storage import storage_service
 from app.ai.quality.image_quality import quality_engine
 from app.ai.detection.issue_detector import issue_detector
 from app.core.security import current_user
-from app.db.models.models import User, Complaint
+from app.db.models.models import User, Complaint, Evidence
 from app.api.routes.areas import assign_by_location
 from app.db.models.models import Comparison
 from sqlalchemy import select
@@ -189,8 +189,11 @@ async def upload_evidence(
 
     file_extension = file.filename.split(".")[-1].lower()
     filename = f"{id}_{evidence_data.type}_{datetime.now().timestamp()}.{file_extension}"
+    file_content = await file.read()
+    if len(file_content) > 25 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail="Images must be 25 MB or smaller")
     file_path = storage_service.save_file(
-        await file.read(),
+        file_content,
         filename,
         subfolder=f"complaints/{id}"
     )
@@ -203,7 +206,7 @@ async def upload_evidence(
         quality_score = quality_result.quality_score
 
     evidence = await evidence_service.add_evidence_with_quality(
-        db, id, evidence_data, file_path, quality_score
+        db, id, evidence_data, file_path, quality_score, file_content, file.content_type
     )
 
     if not is_video:
@@ -228,6 +231,26 @@ async def upload_evidence(
 @router.get("/{id}/evidence", response_model=List[EvidenceResponse])
 async def get_evidence(id: int, db: AsyncSession = Depends(get_db)):
     return await evidence_service.get_evidence_by_complaint(db, id)
+
+@router.get("/evidence/{evidence_id}/file")
+async def get_evidence_file(evidence_id: str, path: str | None = None, db: AsyncSession = Depends(get_db)):
+    if evidence_id == "by-path":
+        evidence = (await db.execute(select(Evidence).where(Evidence.file_path == (path or "")))).scalars().first()
+    elif evidence_id.isdigit():
+        evidence = await db.get(Evidence, int(evidence_id))
+    else:
+        evidence = None
+    if not evidence:
+        raise HTTPException(status_code=404, detail="Evidence not found")
+    if evidence.file_data:
+        return Response(content=evidence.file_data, media_type=evidence.mime_type or "application/octet-stream")
+    # Files uploaded before durable storage was enabled may still be available
+    # until Render next clears its temporary filesystem.
+    from pathlib import Path
+    legacy = Path(storage_service.get_path(evidence.file_path))
+    if legacy.is_file():
+        return Response(content=legacy.read_bytes(), media_type=evidence.mime_type or "application/octet-stream")
+    raise HTTPException(status_code=404, detail="This older upload was removed during a deployment. Please upload it again.")
 
 @router.delete("/{id}/evidence/{evidence_id}")
 async def delete_evidence(id: int, evidence_id: int, db: AsyncSession = Depends(get_db)):

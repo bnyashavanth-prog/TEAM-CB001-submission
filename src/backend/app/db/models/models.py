@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey, Boolean, Text
+from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey, Boolean, Text, LargeBinary
 from sqlalchemy.orm import relationship, declarative_base
 from sqlalchemy.sql import func
 
@@ -50,6 +50,9 @@ class Evidence(Base):
     type = Column(String, nullable=False) # BEFORE, AFTER, WORK_PROOF, FIELD_INSPECTION
     file_path = Column(String, nullable=False)
     mime_type = Column(String, nullable=True)
+    # Render's local filesystem is ephemeral, so original photo bytes are kept
+    # with the evidence record for durable dashboard display.
+    file_data = Column(LargeBinary, nullable=True)
     timestamp = Column(DateTime(timezone=True), nullable=False)
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)

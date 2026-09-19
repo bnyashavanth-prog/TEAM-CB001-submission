@@ -38,12 +38,14 @@ class EvidenceService:
         await db.refresh(db_evidence)
         return db_evidence
 
-    async def add_evidence_with_quality(self, db: AsyncSession, complaint_id: int, evidence_data: EvidenceCreate, file_path: str, quality_score: float):
+    async def add_evidence_with_quality(self, db: AsyncSession, complaint_id: int, evidence_data: EvidenceCreate, file_path: str, quality_score: float, file_data: bytes | None = None, mime_type: str | None = None):
         db_evidence = Evidence(
             **evidence_data.model_dump(),
             complaint_id=complaint_id,
             file_path=file_path,
-            quality_score=quality_score
+            quality_score=quality_score,
+            file_data=file_data,
+            mime_type=mime_type,
         )
         db.add(db_evidence)
         await db.commit()

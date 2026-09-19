@@ -63,7 +63,9 @@ export const complaintApi = {
 
 };
 
-export const evidenceUrl = (filePath: string) => {
+export const evidenceUrl = (filePath: string, evidenceId?: number) => {
+  if (evidenceId) return `${API_ORIGIN}/api/v1/complaints/evidence/${evidenceId}/file`;
+  return `${API_ORIGIN}/api/v1/complaints/evidence/by-path/file?path=${encodeURIComponent(filePath)}`;
   const normalized = filePath.replace(/\\/g, '/');
   const marker = '/uploads/';
   const index = normalized.toLowerCase().lastIndexOf(marker);

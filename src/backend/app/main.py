@@ -23,6 +23,7 @@ async def lifespan(_: FastAPI):
         await connection.execute(text("ALTER TABLE complaints ADD COLUMN IF NOT EXISTS assigned_worker_id INTEGER REFERENCES users(id)"))
         await connection.execute(text("ALTER TABLE complaints ADD COLUMN IF NOT EXISTS service_area VARCHAR"))
         await connection.execute(text("ALTER TABLE complaints ADD COLUMN IF NOT EXISTS worker_acknowledged_at TIMESTAMPTZ"))
+        await connection.execute(text("ALTER TABLE evidence ADD COLUMN IF NOT EXISTS file_data BYTEA"))
         await connection.execute(text("CREATE TABLE IF NOT EXISTS worker_areas (id SERIAL PRIMARY KEY, worker_id INTEGER UNIQUE NOT NULL REFERENCES users(id), name VARCHAR NOT NULL, polygon_json TEXT NOT NULL, created_at TIMESTAMPTZ DEFAULT NOW())"))
         admin_email = os.getenv("MCC_ADMIN_EMAIL")
         admin_password = os.getenv("MCC_ADMIN_PASSWORD")
