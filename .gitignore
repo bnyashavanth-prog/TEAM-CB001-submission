@@ -22,7 +22,7 @@ venv/
 .env.*
 !.env.example
 uploads/
-storage/
+backend/storage/
 database/
 *.db
 *.sqlite*
