@@ -5,8 +5,9 @@ import { ShieldCheck, Users, Wrench } from 'lucide-react';
 const Landing: React.FC = () => (
   <main className="min-h-screen bg-slate-950 text-white">
     <section className="max-w-6xl mx-auto px-6 py-20">
-      <p className="text-blue-400 font-semibold tracking-widest text-sm">MYSURU CITY CORPORATION</p>
-      <h1 className="mt-4 text-5xl font-black max-w-3xl leading-tight">Report civic issues. Track the work. Verify the outcome with AI.</h1>
+      <p className="text-blue-400 font-semibold tracking-widest text-sm">MYSURUDRISHTI</p>
+      <p className="mt-2 text-slate-400 font-semibold tracking-widest text-xs">MYSURU CITY CORPORATION</p>
+      <h1 className="mt-4 text-5xl font-black max-w-3xl leading-tight">MysuruDrishti: civic issues, visible action, AI-verified outcomes.</h1>
       <p className="mt-6 max-w-2xl text-slate-300 text-lg">MysuruDrishti connects residents, field workers, and the MCC control room around transparent photo evidence.</p>
       <div className="mt-10 flex flex-wrap gap-4">
         <Link to="/access/public" className="bg-blue-500 hover:bg-blue-400 px-6 py-3 rounded-lg font-bold">Public login or sign up</Link>

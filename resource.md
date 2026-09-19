@@ -93,10 +93,10 @@ Paste the first 16 characters.
 
 | Field | Value |
 |---|---|
-| Live URL | `<https://...>` |
-| Platform | `<Web / PWA / Android APK link on Drive / ...>` |
-| Test login (if any) | Citizen: `<user / pass>` · Staff: `<user / pass>` · Admin: `<user / pass>` |
-| Sample data loaded? | `<Yes — 120 synthetic complaints across 6 wards>` |
+| Live URL | `https://team-cb-001-submission.vercel.app/` |
+| Platform | `Web application` |
+| Test login (if any) | Citizen: `visheshdevanur@gmail.com / 12345678` · Worker: `4mh24cs181@gmail.com / 12345678` · MCC admin: `mcc.admin@mysurudrishti.in / mcc.admin@mysurudrishti.in` |
+| Sample data loaded? | `Yes — sample complaints are loaded` |
 | How to test offline mode | `<one line>`. Full steps in [docs/setup.md](./docs/setup.md#testing-offline-mode) |
 | If the live link is down | Follow [docs/setup.md](./docs/setup.md) |
 
