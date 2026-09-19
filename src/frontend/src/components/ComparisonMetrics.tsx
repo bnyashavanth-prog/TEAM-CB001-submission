@@ -13,6 +13,13 @@ interface ComparisonMetricsProps {
 }
 
 const ComparisonMetrics: React.FC<ComparisonMetricsProps> = ({ metrics, result, explanation, evidenceScore }) => {
+const scoreCategory = () => {
+    if (result === 'CATEGORY_MISMATCH') return '0/100 · Category mismatch';
+    if (result === 'LOCATION_MISMATCH' || result === 'INSUFFICIENT_EVIDENCE') return '0/100 · Evidence not comparable';
+    if (evidenceScore >= 90) return `${Math.round(evidenceScore)}/100 · Resolved`;
+    if (evidenceScore >= 60) return `${Math.round(evidenceScore)}/100 · Partially resolved`;
+    return `${Math.round(evidenceScore)}/100 · Not resolved`;
+  };
 const getStatusColor = (res: string) => {
     switch (res) {
       case 'RESOLUTION_SUPPORTED': return 'text-green-600 bg-green-50 border-green-200';
@@ -29,7 +36,7 @@ const getStatusColor = (res: string) => {
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider">Live AI image assessment</h3>
         <div className="bg-slate-900 text-white px-3 py-1 rounded-full text-xs font-bold">
-          {result === 'INSUFFICIENT_EVIDENCE' ? 'AI Review Pending' : `AI Visual Score: ${Math.round(evidenceScore)}/100`}
+          AI score: {scoreCategory()}
         </div>
       </div>
 
@@ -44,7 +51,7 @@ const getStatusColor = (res: string) => {
         <p className="text-sm opacity-90">{explanation}</p>
       </div>
 
-      <p className="text-xs text-slate-500">The score and result are determined from Gemini’s visual review of the selected category and both images. Area metrics are not shown because demo detection must not influence an AI judgment.</p>
+      <p className="text-xs text-slate-500">Gemini’s visual review of the selected category and both images produces this final score category automatically. Area metrics are not shown because demo detection must not influence an AI judgment.</p>
     </div>
   );
 };

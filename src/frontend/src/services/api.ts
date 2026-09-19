@@ -61,8 +61,6 @@ export const complaintApi = {
   getComparison: (id: number) =>
     api.get(`${API_BASE}/complaints/${id}/comparison`).then(res => res.data),
 
-  submitDecision: (data: { comparison_id: number; reviewer_id: number; decision: string; reason: string }) =>
-    api.post(`${API_BASE}/verification-human/decision`, data).then(res => res.data),
 };
 
 export const evidenceUrl = (filePath: string) => {

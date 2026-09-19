@@ -120,8 +120,16 @@ class VerificationService:
         await db.commit()
         await db.refresh(db_comparison)
 
-        # 10. Update Complaint Status
-        complaint.status = "AI_VERIFICATION"
+        # 10. The live visual AI result is final; no separate human-verification
+        # queue is used in this workflow.
+        complaint.status = {
+            "RESOLUTION_SUPPORTED": "VERIFIED_RESOLVED",
+            "PARTIALLY_RESOLVED": "PARTIALLY_RESOLVED",
+            "NOT_RESOLVED": "NOT_RESOLVED",
+            "CATEGORY_MISMATCH": "INSUFFICIENT_EVIDENCE",
+            "LOCATION_MISMATCH": "INSUFFICIENT_EVIDENCE",
+            "INSUFFICIENT_EVIDENCE": "INSUFFICIENT_EVIDENCE",
+        }.get(final_verdict, "INSUFFICIENT_EVIDENCE")
         await db.commit()
 
         return db_comparison

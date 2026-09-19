@@ -4,7 +4,6 @@ import Dashboard from './pages/Dashboard';
 import Complaints from './pages/Complaints';
 import ComplaintDetail from './pages/ComplaintDetail';
 import ComplaintCreate from './pages/ComplaintCreate';
-import VerificationQueue from './pages/VerificationQueue';
 import Landing from './pages/Landing';
 import Access from './pages/Access';
 import PublicPortal from './pages/PublicPortal';
@@ -23,7 +22,6 @@ const App: React.FC = () => {
         <div className="flex gap-6">
           <Link to="/mcc" className="hover:text-blue-300">Dashboard</Link>
           <Link to="/complaints" className="hover:text-blue-300">Complaints</Link>
-          <Link to="/verification" className="hover:text-blue-300">Verification</Link>
           <Link to="/analytics" className="hover:text-blue-300">Analytics</Link>
         </div>
       </nav>}
@@ -38,7 +36,6 @@ const App: React.FC = () => {
           <Route path="/complaints" element={<Complaints />} />
           <Route path="/complaints/new" element={<ComplaintCreate />} />
           <Route path="/complaints/:id" element={<ComplaintDetail />} />
-          <Route path="/verification" element={<VerificationQueue />} />
           <Route path="/analytics" element={<div className="text-2xl font-bold">Analytics Dashboard (Coming Soon)</div>} />
         </Routes>
       </main>
