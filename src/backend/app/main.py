@@ -45,6 +45,9 @@ app.add_middleware(
     # Browser requests carry the login bearer token. Credentials cannot be
     # combined with a wildcard origin, so explicitly allow the known web app.
     allow_origins=["http://localhost:5176", "http://127.0.0.1:5176", "https://team-cb-001-submission.vercel.app"],
+    # Vercel creates a unique preview hostname for every deployment. Allow
+    # previews belonging only to this Vercel project, not arbitrary sites.
+    allow_origin_regex=r"https://team-cb-001-submission-[a-z0-9-]+-visheshdevanurs-projects\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
