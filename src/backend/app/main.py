@@ -7,13 +7,17 @@ from app.core.config import settings
 from app.api.routes import health, complaints, verification, verification_human, auth, areas
 from app.storage.file_storage import storage_service
 from app.db.database import engine
+from app.db.models.models import Base
 from app.core.security import hash_password
 import os
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    # Add only the role-workflow columns needed by existing deployments.
+    # Create the schema on a new deployment before applying safe upgrades for
+    # an existing database.  Render starts with an empty Postgres database.
     async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+        # Add only the role-workflow columns needed by existing deployments.
         await connection.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash VARCHAR"))
         await connection.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS service_area VARCHAR"))
         await connection.execute(text("ALTER TABLE complaints ADD COLUMN IF NOT EXISTS assigned_worker_id INTEGER REFERENCES users(id)"))

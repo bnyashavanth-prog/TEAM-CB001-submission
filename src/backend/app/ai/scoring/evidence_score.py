@@ -15,7 +15,8 @@ class EvidenceVector(BaseModel):
 class EvidenceScoringEngine:
     def __init__(self):
         # Load weights from YAML
-        config_path = Path("before-after-ai/backend/app/ai/scoring/scoring_config.yaml")
+        # Resolve relative to this source file so it works locally and on Render.
+        config_path = Path(__file__).with_name("scoring_config.yaml")
         try:
             with open(config_path, "r") as f:
                 self.config = yaml.safe_load(f)
