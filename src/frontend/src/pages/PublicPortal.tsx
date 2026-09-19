@@ -12,17 +12,27 @@ const PublicPortal: React.FC = () => {
   const load = async () => { try { setItems(await complaintApi.mine()); } catch { navigate('/access/public'); } };
   useEffect(() => { void load(); }, []);
   const useDeviceLocation = () => {
-    if (!navigator.geolocation) return setLocationStatus('Device location is unavailable; enter coordinates manually.');
-    setLocationStatus('Requesting device location…');
-    navigator.geolocation.getCurrentPosition(
-      pos => { setForm({...form, latitude: +pos.coords.latitude.toFixed(6), longitude: +pos.coords.longitude.toFixed(6)}); setLocationStatus('Device location selected on the map. Choose “Find address from location” to fill the address.'); },
-      error => {
-        const guidance = error.code === error.PERMISSION_DENIED
-          ? 'Location permission was blocked. Select the site-settings icon next to the address bar, allow Location, then try again.'
-          : 'Your device could not determine a location. Check GPS/Wi-Fi or enter coordinates manually.';
-        setLocationStatus(guidance);
-      }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
-    );
+    if (!navigator.geolocation) return setLocationStatus('This browser does not provide device location. Select the point on the map instead.');
+    const requestLocation = (highAccuracy: boolean, retried = false) => {
+      setLocationStatus(retried ? 'Trying your approximate device location…' : 'Requesting your device location…');
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const latitude = +position.coords.latitude.toFixed(6); const longitude = +position.coords.longitude.toFixed(6);
+          setForm(current => ({ ...current, latitude, longitude }));
+          setLocationStatus('Device location selected on the map. Finding the address automatically…');
+          void findAddressAt(latitude, longitude);
+        },
+        error => {
+          if (!retried && error.code !== error.PERMISSION_DENIED) return requestLocation(false, true);
+          const guidance = error.code === error.PERMISSION_DENIED
+            ? 'Location permission is blocked. Use the site-controls icon beside the address bar, set Location to Allow, then click again.'
+            : 'Your device could not provide a location. Turn on GPS or Wi-Fi, then try again, or choose the point directly on the map.';
+          setLocationStatus(guidance);
+        },
+        { enableHighAccuracy: highAccuracy, timeout: 20000, maximumAge: 0 }
+      );
+    };
+    requestLocation(true);
   };
   const findAddress = async () => {
     await findAddressAt(form.latitude, form.longitude);

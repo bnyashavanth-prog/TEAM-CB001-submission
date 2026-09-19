@@ -34,6 +34,7 @@ export default function PublicLocationPicker({ latitude, longitude, onSelect }: 
     const point = L.latLng(latitude, longitude);
     if (marker.current) marker.current.setLatLng(point);
     else marker.current = L.marker(point).addTo(map.current);
+    map.current.setView(point, Math.max(map.current.getZoom(), 16));
   }, [latitude, longitude]);
 
   return <div ref={root} className="mt-3 h-64 rounded-lg overflow-hidden border border-slate-300" aria-label="Mysuru location selection map" />;
