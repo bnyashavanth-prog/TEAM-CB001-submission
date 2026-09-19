@@ -9,7 +9,6 @@ import Access from './pages/Access';
 import PublicPortal from './pages/PublicPortal';
 import WorkerPortal from './pages/WorkerPortal';
 import PortalComplaintDetail from './pages/PortalComplaintDetail';
-import Analytics from './pages/Analytics';
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -23,7 +22,6 @@ const App: React.FC = () => {
         <div className="flex gap-6">
           <Link to="/mcc" className="hover:text-blue-300">Dashboard</Link>
           <Link to="/complaints" className="hover:text-blue-300">Complaints</Link>
-          <Link to="/analytics" className="hover:text-blue-300">Analytics</Link>
         </div>
       </nav>}
       <main className="flex-1 p-6">
@@ -37,7 +35,6 @@ const App: React.FC = () => {
           <Route path="/complaints" element={<Complaints />} />
           <Route path="/complaints/new" element={<ComplaintCreate />} />
           <Route path="/complaints/:id" element={<ComplaintDetail />} />
-          <Route path="/analytics" element={<Analytics />} />
         </Routes>
       </main>
       {mccView && <footer className="bg-slate-100 p-4 text-center text-sm text-slate-600 border-t">
