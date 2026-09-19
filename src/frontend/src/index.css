@@ -39,3 +39,17 @@ body {
 @keyframes landing-drift { from { transform: translate3d(0,0,0) scale(1); } to { transform: translate3d(-18px,16px,0) scale(1.08); } }
 @keyframes landing-orbit { to { transform: rotate(344deg); } }
 @media (prefers-reduced-motion: reduce) { .landing-enter, .landing-visual, .landing-float-card, .landing-glow-one, .landing-glow-two, .landing-orbit { animation: none; } .landing-feature { transition: none; } }
+
+.auth-shell { position: relative; isolation: isolate; }
+.auth-grid { position: absolute; inset: 0; z-index: -2; opacity: .2; background-image: linear-gradient(rgba(79,141,255,.14) 1px, transparent 1px), linear-gradient(90deg, rgba(79,141,255,.14) 1px, transparent 1px); background-size: 52px 52px; mask-image: linear-gradient(to bottom, black, transparent); }
+.auth-glow { position: absolute; z-index: -1; border-radius: 999px; filter: blur(70px); pointer-events: none; }
+.auth-glow-one { width: 34rem; height: 30rem; top: 10rem; left: 18%; background: rgba(0,119,255,.2); animation: auth-drift 16s ease-in-out infinite alternate; }
+.auth-glow-two { width: 26rem; height: 23rem; bottom: 0; right: 6%; background: rgba(0,229,255,.1); animation: auth-drift 18s ease-in-out infinite alternate-reverse; }
+.auth-input, .auth-input-wrap { width: 100%; border: 1px solid rgba(122,167,255,.25); border-radius: .75rem; background: rgba(3,8,23,.55); color: #fff; transition: border-color .2s ease, box-shadow .2s ease; }
+.auth-input { display: block; padding: .8rem .9rem; }
+.auth-input-wrap { display: flex; align-items: center; gap: .7rem; padding: 0 .85rem; }
+.auth-input-wrap input { min-width: 0; width: 100%; background: transparent; padding: .8rem 0; color: #fff; outline: none; }
+.auth-input::placeholder, .auth-input-wrap input::placeholder { color: #7182a2; }
+.auth-input:focus, .auth-input-wrap:focus-within { border-color: rgba(0,229,255,.8); box-shadow: 0 0 0 3px rgba(0,229,255,.1), 0 0 20px rgba(0,130,255,.12); outline: none; }
+@keyframes auth-drift { from { transform: translate3d(0,0,0) scale(1); } to { transform: translate3d(22px,-15px,0) scale(1.06); } }
+@media (prefers-reduced-motion: reduce) { .auth-glow-one, .auth-glow-two { animation: none; } }
