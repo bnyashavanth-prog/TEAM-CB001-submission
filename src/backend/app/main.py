@@ -42,7 +42,9 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    # Browser requests carry the login bearer token. Credentials cannot be
+    # combined with a wildcard origin, so explicitly allow the known web app.
+    allow_origins=["http://localhost:5176", "http://127.0.0.1:5176", "https://team-cb-001-submission.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
