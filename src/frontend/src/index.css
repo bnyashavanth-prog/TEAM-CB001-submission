@@ -51,5 +51,6 @@ body {
 .auth-input-wrap input { min-width: 0; width: 100%; background: transparent; padding: .8rem 0; color: #fff; outline: none; }
 .auth-input::placeholder, .auth-input-wrap input::placeholder { color: #7182a2; }
 .auth-input:focus, .auth-input-wrap:focus-within { border-color: rgba(0,229,255,.8); box-shadow: 0 0 0 3px rgba(0,229,255,.1), 0 0 20px rgba(0,130,255,.12); outline: none; }
+.auth-input:-webkit-autofill, .auth-input-wrap input:-webkit-autofill, .auth-input:-webkit-autofill:hover, .auth-input-wrap input:-webkit-autofill:hover, .auth-input:-webkit-autofill:focus, .auth-input-wrap input:-webkit-autofill:focus { -webkit-text-fill-color: #fff; -webkit-box-shadow: 0 0 0 1000px #09142a inset; box-shadow: 0 0 0 1000px #09142a inset; caret-color: #fff; transition: background-color 9999s ease-out 0s; }
 @keyframes auth-drift { from { transform: translate3d(0,0,0) scale(1); } to { transform: translate3d(22px,-15px,0) scale(1.06); } }
 @media (prefers-reduced-motion: reduce) { .auth-glow-one, .auth-glow-two { animation: none; } }
