@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle, AlertCircle, Clock, ExternalLink } from 'lucide-react';
 import axios from 'axios';
+import { API_ORIGIN } from '../services/api';
 import { Complaint } from '../types/complaint';
 
 const VerificationQueue: React.FC = () => {
@@ -9,7 +10,7 @@ const VerificationQueue: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('/api/v1/verification-human/queue')
+    axios.get(`${API_ORIGIN}/api/v1/verification-human/queue`)
       .then(res => {
         if (Array.isArray(res.data)) {
           setQueue(res.data);
