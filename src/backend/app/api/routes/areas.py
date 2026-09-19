@@ -5,6 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.database import get_db
 from app.db.models.models import User, WorkerArea, Complaint
+from app.core.security import current_user
 
 router = APIRouter(tags=["Worker areas"])
 
@@ -47,6 +48,16 @@ async def workers(db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(User).where(User.role == "WORKER"))
     return [{"id": w.id, "name": w.name, "email": w.email} for w in result.scalars().all()]
 
+@router.get("/mine")
+async def my_area(user: User = Depends(current_user), db: AsyncSession = Depends(get_db)):
+    if user.role != "WORKER":
+        raise HTTPException(403, "Worker access is required")
+    result = await db.execute(select(WorkerArea).where(WorkerArea.worker_id == user.id))
+    area = result.scalars().first()
+    if not area:
+        return {"assigned": False, "name": None, "polygon": None}
+    return {"assigned": True, "name": area.name, "polygon": json.loads(area.polygon_json)}
+
 @router.get("/")
 async def list_areas(db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(WorkerArea))
@@ -63,6 +74,7 @@ async def save_area(payload: AreaRequest, db: AsyncSession = Depends(get_db)):
     existing = await db.execute(select(WorkerArea).where(WorkerArea.worker_id == worker.id)); area = existing.scalars().first()
     if area: area.name, area.polygon_json = payload.name, json.dumps(payload.polygon)
     else: area = WorkerArea(worker_id=worker.id, name=payload.name, polygon_json=json.dumps(payload.polygon)); db.add(area)
+    worker.service_area = payload.name
     # Immediately route any older, still-unassigned reports that fall in the new area.
     complaints = await db.execute(select(Complaint).where(Complaint.assigned_worker_id.is_(None)))
     for complaint in complaints.scalars().all():
@@ -91,5 +103,8 @@ async def delete_area(area_id: int, db: AsyncSession = Depends(get_db)):
         complaint.status = "UNASSIGNED"
         released += 1
     await db.delete(area)
+    worker = await db.get(User, area.worker_id)
+    if worker:
+        worker.service_area = None
     await db.commit()
     return {"message": "Area allocation removed", "released_complaints": released}

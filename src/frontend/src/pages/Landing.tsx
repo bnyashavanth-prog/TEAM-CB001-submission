@@ -10,7 +10,7 @@ const Landing: React.FC = () => (
       <p className="mt-6 max-w-2xl text-slate-300 text-lg">MysuruDrishti connects residents, field workers, and the MCC control room around transparent photo evidence.</p>
       <div className="mt-10 flex flex-wrap gap-4">
         <Link to="/access/public" className="bg-blue-500 hover:bg-blue-400 px-6 py-3 rounded-lg font-bold">Public login or sign up</Link>
-        <Link to="/access/worker" className="bg-white text-slate-900 hover:bg-slate-200 px-6 py-3 rounded-lg font-bold">Worker login or sign up</Link>
+        <Link to="/access/worker" className="bg-white text-slate-900 hover:bg-slate-200 px-6 py-3 rounded-lg font-bold">Worker login</Link>
         <Link to="/access/admin" className="border border-slate-600 hover:bg-slate-800 px-6 py-3 rounded-lg font-bold">Login as administrator</Link>
       </div>
     </section>

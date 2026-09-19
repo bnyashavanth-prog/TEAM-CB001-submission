@@ -18,6 +18,11 @@ export const authApi = {
   signup: (data: { name: string; email: string; password: string; role: 'PUBLIC' | 'WORKER'; service_area?: string }) =>
     api.post('/api/v1/auth/signup', data).then(res => res.data),
   login: (data: { email: string; password: string }) => api.post('/api/v1/auth/login', data).then(res => res.data),
+  createWorker: (data: { name: string; email: string; password: string }) => api.post('/api/v1/auth/workers', data).then(res => res.data),
+};
+
+export const areaApi = {
+  mine: () => api.get('/api/v1/areas/mine').then(res => res.data),
 };
 
 export const complaintApi = {
