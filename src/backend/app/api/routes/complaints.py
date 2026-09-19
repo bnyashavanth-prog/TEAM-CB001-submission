@@ -144,7 +144,22 @@ async def portal_complaint_detail(id: int, db: AsyncSession = Depends(get_db), u
         select(Comparison).where(Comparison.complaint_id == id).order_by(Comparison.created_at.desc())
     )
     comparison = comparison_result.scalars().first()
-    return {"complaint": complaint, "evidence": evidence, "comparison": comparison}
+    # Do not put the persisted image bytes into the JSON detail response.
+    # The browser requests each image through the dedicated evidence-file URL.
+    evidence_payload = [{
+        "id": item.id,
+        "complaint_id": item.complaint_id,
+        "type": item.type,
+        "file_path": item.file_path,
+        "mime_type": item.mime_type,
+        "timestamp": item.timestamp,
+        "latitude": item.latitude,
+        "longitude": item.longitude,
+        "device_id": item.device_id,
+        "quality_score": item.quality_score,
+        "created_at": item.created_at,
+    } for item in evidence]
+    return {"complaint": complaint, "evidence": evidence_payload, "comparison": comparison}
 
 @router.get("/", response_model=List[ComplaintResponse])
 async def list_complaints(db: AsyncSession = Depends(get_db)):
