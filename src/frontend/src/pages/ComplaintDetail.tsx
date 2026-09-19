@@ -94,7 +94,7 @@ const ComplaintDetail: React.FC = () => {
               <div key={type} className="flex flex-col">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-sm font-semibold text-zinc-900">{label}</span>
-                  {item && <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">{new Date(item.timestamp).toLocaleDateString()}</span>}
+                  {item && <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">{new Date(item.created_at).toLocaleDateString()}</span>}
                 </div>
                 
                 {item ? (
