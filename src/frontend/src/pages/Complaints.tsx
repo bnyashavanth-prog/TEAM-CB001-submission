@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, MapPin, Calendar, Search } from 'lucide-react';
+import { Plus, MapPin, AlertTriangle, Calendar } from 'lucide-react';
 import { complaintApi } from '../services/api';
 import { Complaint } from '../types/complaint';
 
@@ -14,107 +14,85 @@ const Complaints: React.FC = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const getStatusStyle = (status: string) => {
-    switch (status) {
-      case 'OPEN': return 'bg-zinc-100 text-zinc-700';
-      case 'ASSIGNED': return 'bg-cyan-50 text-cyan-700';
-      case 'IN_PROGRESS': return 'bg-blue-50 text-blue-700';
-      case 'VERIFIED_RESOLVED': return 'bg-emerald-50 text-emerald-700';
-      case 'PARTIALLY_RESOLVED': return 'bg-amber-50 text-amber-700';
-      default: return 'bg-red-50 text-red-700';
-    }
-  };
-
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 pb-6 border-b border-zinc-200">
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">Complaints Ledger</h1>
-          <p className="text-zinc-500 mt-1">Manage and track all reported civic issues</p>
+          <h1 className="text-3xl font-bold text-slate-900">Civic Complaints</h1>
+          <p className="text-slate-500">Manage and track reported civic issues</p>
         </div>
-        <Link to="/complaints/new" className="btn-premium btn-primary px-4 py-2 flex items-center gap-2">
-          <Plus className="w-4 h-4" /> New Report
+        <Link
+          to="/complaints/new"
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-blue-700 transition-colors"
+        >
+          <Plus className="w-5 h-5" />
+          New Complaint
         </Link>
-      </div>
+      </div >
 
-      <div className="card-premium overflow-hidden">
-        <div className="p-4 border-b border-zinc-100 bg-zinc-50/50 flex flex-col sm:flex-row gap-4 justify-between items-center">
-          <div className="relative w-full sm:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
-            <input 
-              type="text" 
-              placeholder="Search reports..." 
-              className="input-premium pl-9 h-9 w-full"
-            />
-          </div>
-          <div className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-            {complaints.length} Total Records
-          </div>
-        </div>
-
-        {loading ? (
-          <div className="text-center py-20 text-zinc-400 flex flex-col items-center">
-            <div className="w-6 h-6 rounded-full border-2 border-zinc-200 border-t-zinc-900 animate-spin mb-4" />
-            <p>Loading ledger...</p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead className="bg-white border-b border-zinc-100">
-                <tr>
-                  <th className="px-6 py-3 font-semibold text-zinc-500 text-xs uppercase tracking-wider">Reference</th>
-                  <th className="px-6 py-3 font-semibold text-zinc-500 text-xs uppercase tracking-wider">Category</th>
-                  <th className="px-6 py-3 font-semibold text-zinc-500 text-xs uppercase tracking-wider">Location</th>
-                  <th className="px-6 py-3 font-semibold text-zinc-500 text-xs uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 font-semibold text-zinc-500 text-xs uppercase tracking-wider text-right">Action</th>
+      {loading ? (
+        <div className="text-center py-12 text-slate-500">Loading complaints...</div>
+      ) : (
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <table className="w-full text-left border-collapse">
+            <thead className="bg-slate-50 border-b border-slate-200">
+              <tr>
+                <th className="p-4 font-semibold text-slate-600 text-sm">Complaint #</th>
+                <th className="p-4 font-semibold text-slate-600 text-sm">Issue Type</th>
+                <th className="p-4 font-semibold text-slate-600 text-sm">Location</th>
+                <th className="p-4 font-semibold text-slate-600 text-sm">Status</th>
+                <th className="p-4 font-semibold text-slate-600 text-sm">Created</th>
+                <th className="p-4 font-semibold text-slate-600 text-sm">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {complaints.map((c) => (
+                <tr key={c.id} className="hover:bg-slate-50 transition-colors">
+                  <td className="p-4 font-bold text-slate-900">{c.complaint_number}</td>
+                  <td className="p-4">
+                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+                      {c.issue_type.replace('_', ' ')}
+                    </span>
+                  </td>
+                  <td className="p-4 text-sm text-slate-600">
+                    <div className="flex items-center gap-1">
+                      <MapPin className="w-3 h-3" /> {c.address || 'No address'}
+                    </div>
+                  </td>
+                  <td className="p-4">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium
+                      ${c.status === 'OPEN' ? 'bg-blue-100 text-blue-700' :
+                        c.status === 'VERIFIED_RESOLVED' ? 'bg-green-100 text-green-700' :
+                        'bg-orange-100 text-orange-700'}`}>
+                      {c.status}
+                    </span>
+                  </td>
+                  <td className="p-4 text-sm text-slate-500">
+                    <div className="flex items-center gap-1">
+                      <Calendar className="w-3 h-3" /> {new Date(c.created_at).toLocaleDateString()}
+                    </div>
+                  </td>
+                  <td className="p-4">
+                    <Link
+                      to={`/complaints/${c.id}`}
+                      className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                    >
+                      View Details
+                    </Link>
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-100 bg-white">
-                {complaints.map((c) => (
-                  <tr key={c.id} className="hover:bg-zinc-50/50 transition-colors group cursor-default">
-                    <td className="px-6 py-4">
-                      <span className="font-medium text-zinc-900 group-hover:text-zinc-600 transition-colors">
-                        {c.complaint_number}
-                      </span>
-                      <div className="text-[10px] text-zinc-400 mt-1 flex items-center gap-1 uppercase tracking-wider">
-                        <Calendar className="w-3 h-3" /> {new Date(c.created_at).toLocaleDateString()}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm font-medium text-zinc-700 capitalize">
-                        {c.issue_type.replace(/_/g, ' ')}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-start gap-1.5 text-sm text-zinc-500 max-w-[200px]">
-                        <MapPin className="w-4 h-4 shrink-0 mt-0.5 text-zinc-400" />
-                        <span className="truncate" title={c.address}>{c.address || 'Coordinates only'}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${getStatusStyle(c.status)}`}>
-                        {c.status.replace(/_/g, ' ')}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <Link to={`/complaints/${c.id}`} className="inline-flex items-center text-sm font-semibold text-zinc-900 hover:text-zinc-600 transition-colors">
-                        Inspect
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-                {complaints.length === 0 && (
-                  <tr>
-                    <td colSpan={5} className="py-16 text-center text-zinc-500 text-sm">
-                      No complaints found in the ledger.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+              ))}
+              {complaints.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="p-12 text-center text-slate-500 italic">
+                    No complaints found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };
