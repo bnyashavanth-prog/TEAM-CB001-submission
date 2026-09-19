@@ -21,6 +21,25 @@ body {
   color: var(--text);
 }
 
+/* Shared civic workspace - presentation only. Routes and data flow remain unchanged. */
+.app-workspace { min-height: calc(100vh - 8rem); padding: 2rem clamp(1rem, 3vw, 3rem) 3rem; background: #f4f7fb; color: #172033; }
+.app-nav { position: sticky; top: 0; z-index: 30; background: rgba(9, 20, 40, .96); border-bottom: 1px solid rgba(143, 184, 255, .18); box-shadow: 0 5px 20px rgba(8, 19, 39, .12); }
+.app-nav-inner { max-width: 1600px; min-height: 68px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 clamp(1rem, 3vw, 3rem); gap: 1rem; }
+.app-brand { display: flex; align-items: center; gap: .7rem; color: #fff; min-width: 0; }
+.app-brand-mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(145deg, #2678e9, #55c5de); color: #f6fbff; font-size: 11px; font-weight: 900; letter-spacing: -.04em; box-shadow: 0 5px 16px rgba(38,120,233,.32); }
+.app-brand small { display: block; color: #91a9cd; font-size: 9px; font-weight: 800; letter-spacing: .13em; line-height: 1.1; }
+.app-brand strong { display: block; margin-top: 2px; font-size: 17px; letter-spacing: -.04em; }.app-brand strong span { color: #62a7ff; }
+.app-nav-links { display: flex; align-items: center; gap: .25rem; }.app-nav-links a { display: inline-flex; align-items: center; gap: .45rem; padding: .6rem .75rem; border-radius: .55rem; color: #c0cee5; font-size: 13px; font-weight: 650; transition: color .18s, background .18s, transform .18s; }.app-nav-links a:hover { color: #fff; background: rgba(255,255,255,.08); transform: translateY(-1px); }
+.app-footer { padding: 1.1rem 1rem; border-top: 1px solid #e4eaf2; background: #fff; color: #54637a; font-size: 12px; text-align: center; }.app-footer span { color: #8a98a9; margin-left: .35rem; }
+.app-workspace h1 { letter-spacing: -.045em; }.app-workspace h2 { letter-spacing: -.025em; }
+.app-workspace input:not([type="checkbox"]):not([type="file"]), .app-workspace select, .app-workspace textarea { border-color: #d7e0ec; border-radius: .6rem; background: #fff; color: #18243a; transition: border-color .18s, box-shadow .18s, background .18s; }.app-workspace input:not([type="checkbox"]):not([type="file"]):focus, .app-workspace select:focus, .app-workspace textarea:focus { outline: none; border-color: #4d8cf2; box-shadow: 0 0 0 3px rgba(77,140,242,.13); }
+.app-workspace button { transition: transform .16s ease, box-shadow .16s ease, filter .16s ease; }.app-workspace button:not(:disabled):hover { transform: translateY(-1px); filter: brightness(.98); }.app-workspace button:focus-visible, .app-workspace a:focus-visible { outline: 3px solid rgba(38,120,233,.35); outline-offset: 2px; }
+.app-workspace .bg-white { border-color: #e2e8f0 !important; box-shadow: 0 8px 24px rgba(23, 48, 79, .045); }.app-workspace .rounded-xl { border-radius: .95rem; }
+.app-workspace table thead { background: #f5f8fc !important; }.app-workspace table th { color: #53647c !important; font-size: 11px; letter-spacing: .045em; text-transform: uppercase; }.app-workspace table tbody tr { transition: background .16s ease; }.app-workspace table tbody tr:hover { background: #f8fbff; }
+.app-workspace .leaflet-container { font-family: inherit; border-radius: .7rem; }.app-workspace .leaflet-control-attribution { font-size: 10px; }
+.app-workspace .text-slate-500 { color: #617087; }.app-workspace .text-slate-600 { color: #4d5d75; }
+@media (max-width: 640px) { .app-workspace { padding: 1.25rem 1rem 2rem; }.app-nav-inner { min-height: 62px; }.app-brand small { display: none; }.app-nav-links a { padding: .55rem; font-size: 0; }.app-nav-links a svg { width: 18px; height: 18px; }.app-footer span { display: block; margin: .25rem 0 0; } }
+
 .landing-shell { min-height: 100vh; position: relative; isolation: isolate; }
 .landing-grid { position: absolute; inset: 0; z-index: -2; opacity: .25; background-image: linear-gradient(rgba(79, 141, 255, .14) 1px, transparent 1px), linear-gradient(90deg, rgba(79, 141, 255, .14) 1px, transparent 1px); background-size: 56px 56px; mask-image: linear-gradient(to bottom, black, transparent 85%); }
 .landing-glow { position: absolute; z-index: -1; border-radius: 999px; filter: blur(60px); pointer-events: none; }
