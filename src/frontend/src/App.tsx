@@ -9,6 +9,7 @@ import Access from './pages/Access';
 import PublicPortal from './pages/PublicPortal';
 import WorkerPortal from './pages/WorkerPortal';
 import PortalComplaintDetail from './pages/PortalComplaintDetail';
+import Analytics from './pages/Analytics';
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -36,7 +37,7 @@ const App: React.FC = () => {
           <Route path="/complaints" element={<Complaints />} />
           <Route path="/complaints/new" element={<ComplaintCreate />} />
           <Route path="/complaints/:id" element={<ComplaintDetail />} />
-          <Route path="/analytics" element={<div className="text-2xl font-bold">Analytics Dashboard (Coming Soon)</div>} />
+          <Route path="/analytics" element={<Analytics />} />
         </Routes>
       </main>
       {mccView && <footer className="bg-slate-100 p-4 text-center text-sm text-slate-600 border-t">
