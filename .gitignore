@@ -21,4 +21,11 @@ venv/
 .env
 .env.*
 !.env.example
+uploads/
+storage/
+database/
+*.db
+*.sqlite*
+.pytest_cache/
+*.log
 .DS_Store

@@ -20,26 +20,26 @@ HOW TO FILL THIS FILE
 
 | Field | Value |
 |---|---|
-| Team ID (from dashboard) | `<HM1-XXXX>` |
-| Team Name | `<team name>` |
-| College(s) | `<college name(s)>` |
-| Team Leader | `<name>` · `<email>` · `<phone>` |
-| Repository | `<https://github.com/org-or-user/repo>` |
+| Team ID (from dashboard) | `CB001` |
+| Team Name | `Code Breakers` |
+| College(s) | `Maharaja Institute of Technology Mysore` |
+| Team Leader | `Bhavish S` · `4mh24cs017@gmail.com` · `7349568649` |
+| Repository | `https://github.com/visheshdevanur/TEAM-CB001-submission` |
 
 | # | Member | Program & Year | GitHub Handle | Primary Role |
 |---|---|---|---|---|
-| 1 | `<name>` (Lead) | `<B.E. CSE, 3rd yr>` | `@<handle>` | `<backend / ML / frontend / ...>` |
-| 2 | `<name>` | `<...>` | `@<handle>` | `<...>` |
-| 3 | `<name>` | `<...>` | `@<handle>` | `<...>` |
-| 4 | `<name>` | `<...>` | `@<handle>` | `<...>` |
+| 1 | Bhavish S (Lead) | `BE/B.Tech (2026)` | [@Bhavish-S](https://github.com/Bhavish-S) | Project leadership & integration |
+| 2 | Yashavanth B N | `BE/B.Tech (2026)` | [@bnyashavanth-prog](https://github.com/bnyashavanth-prog) | Product & testing |
+| 3 | Varshith V | `BE/B.Tech (2026)` | [@4mh24cs167-tech](https://github.com/4mh24cs167-tech) | Backend & worker workflow |
+| 4 | Vishesh G Devanur | `BE/B.Tech (2026)` | [@visheshdevanur](https://github.com/visheshdevanur) | Frontend & AI integration |
 
 ---
 
 ## 2. What We Built (one-liner)
 
-**Sub-problem:** `<Routing | Follow-through | Visibility | Verification | Detection without reporting | Segregation drift | Hotspot pattern-finding | Field worker feedback loop | Own: ____>`
+**Sub-problem:** `Follow-through, verification, and field-worker feedback loop`
 
-**In one sentence:** `<e.g. "An offline-first reporting app that auto-routes complaints to MCC, town panchayat or gram panchayat using ward boundaries and issue type, with a confidence score for boundary cases.">`
+**In one sentence:** `A Mysuru civic-complaint workflow that routes map-selected reports to allotted workers, records their action, and uses Before/After AI review to give citizens and MCC evidence of the outcome.`
 
 ---
 
@@ -123,4 +123,4 @@ Paste the first 16 characters.
 - [ ] No code specific to this challenge was written before 18 Sept 2026, 00:00 IST.
 - [ ] We will not modify or replace any linked file after 20 Sept 2026, 23:59 IST.
 
-**Submitted by:** `<Team Leader name>` · **Date/Time (IST):** `<20-09-2026 21:40>`
+**Submitted by:** `Bhavish S` · **Date/Time (IST):** `<20-09-2026 21:40>`

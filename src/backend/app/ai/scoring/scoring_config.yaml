@@ -1,0 +1,15 @@
+# Evidence Scoring Configuration
+# Weights must sum to 1.0
+
+weights:
+  quality: 0.15          # Image quality (blur, brightness, etc.)
+  alignment: 0.20       # Geometric alignment/landmark matching
+  issue_before: 0.10     # Confidence that an issue existed in BEFORE
+  reduction: 0.40        # The actual area reduction percentage
+  temporal: 0.15         # Chronological consistency
+
+# Score thresholds
+thresholds:
+  resolved: 80
+  partially_resolved: 40
+  insufficient: 20
