@@ -4,7 +4,7 @@ from sqlalchemy import text
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.core.config import settings
-from app.api.routes import health, complaints, verification, auth, areas
+from app.api.routes import health, complaints, verification, auth, areas, notifications
 from app.storage.file_storage import storage_service
 from app.db.database import engine
 from app.db.models.models import Base
@@ -55,6 +55,7 @@ app.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth")
 app.include_router(areas.router, prefix=f"{settings.API_V1_STR}/areas")
 app.include_router(complaints.router, prefix=f"{settings.API_V1_STR}/complaints")
 app.include_router(verification.router, prefix=settings.API_V1_STR)
+app.include_router(notifications.router, prefix=f"{settings.API_V1_STR}/notifications")
 
 app.mount("/uploads", StaticFiles(directory=storage_service.upload_dir), name="uploads")
 

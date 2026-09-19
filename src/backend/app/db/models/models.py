@@ -43,6 +43,17 @@ class WorkerArea(Base):
     polygon_json = Column(Text, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
+class Notification(Base):
+    __tablename__ = "notifications"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    complaint_id = Column(Integer, ForeignKey("complaints.id"), nullable=False)
+    title = Column(String, nullable=False)
+    message = Column(Text, nullable=False)
+    kind = Column(String, nullable=False)  # RESOLVED, REWORK
+    is_read = Column(Boolean, nullable=False, default=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
 class Evidence(Base):
     __tablename__ = "evidence"
     id = Column(Integer, primary_key=True, index=True)

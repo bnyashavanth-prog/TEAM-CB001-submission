@@ -25,6 +25,11 @@ export const areaApi = {
   mine: () => api.get('/api/v1/areas/mine').then(res => res.data),
 };
 
+export const notificationApi = {
+  mine: () => api.get('/api/v1/notifications/mine').then(res => res.data),
+  markRead: (id: number) => api.post(`/api/v1/notifications/${id}/read`).then(res => res.data),
+};
+
 export const complaintApi = {
   dashboard: () => api.get(`${API_BASE}/complaints/dashboard`).then(res => res.data),
   create: (data: ComplaintCreateInput) =>

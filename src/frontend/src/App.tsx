@@ -9,10 +9,12 @@ import Access from './pages/Access';
 import PublicPortal from './pages/PublicPortal';
 import WorkerPortal from './pages/WorkerPortal';
 import PortalComplaintDetail from './pages/PortalComplaintDetail';
+import NotificationPanel from './components/NotificationPanel';
 
 const App: React.FC = () => {
   const location = useLocation();
   const mccView = location.pathname.startsWith('/mcc') || location.pathname.startsWith('/complaints') || location.pathname.startsWith('/verification');
+  const portalView = location.pathname === '/public' || location.pathname === '/worker';
   return (
     <div className="min-h-screen flex flex-col">
       {mccView && <nav className="bg-slate-900 text-white p-4 flex justify-between items-center">
@@ -25,6 +27,7 @@ const App: React.FC = () => {
         </div>
       </nav>}
       <main className="flex-1 p-6">
+        {portalView && <div className="max-w-6xl mx-auto mb-6"><NotificationPanel /></div>}
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/access/:role" element={<Access />} />

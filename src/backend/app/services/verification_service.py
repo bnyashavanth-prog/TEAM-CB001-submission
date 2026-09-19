@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc
-from app.db.models.models import Complaint, Evidence, Comparison, VerificationAction
+from app.db.models.models import Complaint, Evidence, Comparison, VerificationAction, Notification
 from app.ai.detection.issue_detector import issue_detector
 from app.ai.comparison.semantic_compare import semantic_comparator
 from app.ai.alignment.homography import homography_aligner
@@ -130,6 +130,22 @@ class VerificationService:
             "LOCATION_MISMATCH": "INSUFFICIENT_EVIDENCE",
             "INSUFFICIENT_EVIDENCE": "INSUFFICIENT_EVIDENCE",
         }.get(final_verdict, "INSUFFICIENT_EVIDENCE")
+        if final_verdict == "RESOLUTION_SUPPORTED" and overall_score >= 90 and complaint.created_by:
+            db.add(Notification(
+                user_id=complaint.created_by,
+                complaint_id=complaint.id,
+                kind="RESOLVED",
+                title="Your complaint was resolved",
+                message=f"{complaint.complaint_number} received an AI score of {int(overall_score)}/100. The Before/After evidence supports that the issue is resolved.",
+            ))
+        elif complaint.assigned_worker_id:
+            db.add(Notification(
+                user_id=complaint.assigned_worker_id,
+                complaint_id=complaint.id,
+                kind="REWORK",
+                title="Further work or clearer evidence is needed",
+                message=f"{complaint.complaint_number} received an AI score of {int(overall_score)}/100 ({final_verdict.replace('_', ' ').lower()}). Please revisit the issue and upload a new After photo.",
+            ))
         await db.commit()
 
         return db_comparison
